@@ -30,7 +30,7 @@ const options = {
         url: 'http://localhost:3500',
       },
       {
-        url: 'https://oau-emergency-app.onrender.com',
+        url: 'https://oau-emergency.onrender.com',
       },
     ],
   },
