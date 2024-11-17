@@ -27,10 +27,10 @@ const options = {
     },
     servers: [
       {
-        url: 'http://localhost:3500',
+        url: 'https://oau-emergency.onrender.com',
       },
       {
-        url: 'https://oau-emergency.onrender.com',
+        url: 'http://localhost:3500',
       },
     ],
   },
