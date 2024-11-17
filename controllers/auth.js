@@ -12,14 +12,7 @@ const { sendOTP } = require('../utils/sendOtp');
 // ⚡️ @Access -> Public
 const register = async (req, res) => {
   try {
-    const {
-      email: userEmail,
-      firstname,
-      lastname,
-      password,
-      dateOfBirth,
-      gender,
-    } = req.body;
+    const { email: userEmail, firstname, lastname, password } = req.body;
 
     const email = normalizeEmail(userEmail);
 
@@ -46,18 +39,6 @@ const register = async (req, res) => {
         message: 'Password must be at least 8 characters',
       });
 
-    if (dateOfBirth && !isDate(dateOfBirth))
-      return res.status(400).json({
-        success: false,
-        message: 'Invalid date of birth',
-      });
-
-    if (gender && !['Male', 'Female'].includes(gender))
-      return res.status(400).json({
-        success: false,
-        message: 'Gender must be either Male or Female',
-      });
-
     const existingUser = await User.findOne({ email }).exec();
     if (existingUser?.isVerified)
       return res.status(409).json({
@@ -71,8 +52,6 @@ const register = async (req, res) => {
       password: hashedPassword,
       firstname,
       lastname,
-      ...(dateOfBirth && { dateOfBirth }),
-      ...(gender && { gender }),
     };
 
     const user = existingUser
@@ -233,14 +212,14 @@ const login = async (req, res) => {
 
   const accessToken = sign(
     {
-      UserInfo: { email: user.email },
+      Info: { email: user.email, type: 'user', id: user._id },
     },
     'rWUAUFHXXmIhNICO6Zlre1mHXn8XivgAOTW6e4BXOLD8sJRSKAISfQ7de8MZE6y12A8ainDlfu3RbuSvBZZhRVWNpZOYdZ/zxd9u115GykkrCQ8eaZuyrMpaL4EUTMQzXyx5TagDvYoQugatuXcLELbAztkXcoo8kmKdl5jGt9QMeG99jT2r742YONzVzGttPbTN5HUFf2yciXBqmD1c+UPbxsskx+XfYhP++jPqYgo5XepJegidrYMZC+owb7blJr110y7G/lDQqljZlGJ0WsMaxu1h5q62aozYFY0B6ta+C7neSn6ru2F7VayN/TMENBcrNRCXq7DR5uEpfasvig==',
     { expiresIn: '15m' },
   );
 
   const refreshToken = sign(
-    { email: user.email },
+    { email: user.email, type: 'user', id: user._id },
     'lT6QfEjns9UuevUFcWvhPohhN4T2Sq6Am2jEqoMgfUS9FAYWoQfpq99cVxd4iQxCnJO3U0JlJ64m+6g9aqC+i8TLmPRx8uMiJYaoQVi//gsFLg8tL5zxrE/pI2rC8it+92BJFvAFNG8U54eHyhkVNtJH7/wY0kThyMDEh3KlyjlHPslHtpkN8ntGzRmG5Fo07v4Z5fDQ1JevE+nw7Qz3buLqjjN35KaGVq4tlKFA3r/WamjtT0LmtLfLCeWAVHdrYz8ECKC3ArgUjGZFQGUu1mtAb3ohT7iOXF2IMecJOj55EVRhKGtMRuyaKo+t4Ysoy31Rt8htFLyLXAW/SvaESA==',
     { expiresIn: '7d' },
   );
@@ -283,7 +262,7 @@ const refresh = async (req, res) => {
 
       const accessToken = sign(
         {
-          UserInfo: { email: user.email },
+          Info: { email: user.email, typr: 'user', id: user._id },
         },
         'rWUAUFHXXmIhNICO6Zlre1mHXn8XivgAOTW6e4BXOLD8sJRSKAISfQ7de8MZE6y12A8ainDlfu3RbuSvBZZhRVWNpZOYdZ/zxd9u115GykkrCQ8eaZuyrMpaL4EUTMQzXyx5TagDvYoQugatuXcLELbAztkXcoo8kmKdl5jGt9QMeG99jT2r742YONzVzGttPbTN5HUFf2yciXBqmD1c+UPbxsskx+XfYhP++jPqYgo5XepJegidrYMZC+owb7blJr110y7G/lDQqljZlGJ0WsMaxu1h5q62aozYFY0B6ta+C7neSn6ru2F7VayN/TMENBcrNRCXq7DR5uEpfasvig==',
         { expiresIn: '15m' },

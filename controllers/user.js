@@ -4,16 +4,54 @@ const isDate = require('validator/lib/isDate');
 const normalizeEmail = require('validator/lib/normalizeEmail');
 const User = require('../models/User');
 
-// ⚡️ @Description -> Get all users
-// ⚡️ @Route -> api/user/all-users (GET)
-// ⚡️ @Access -> Private
-const getAllUsers = async (req, res) => {
-  const users = await User.find().select('-password').lean();
-
+const getContact = async (req, res) => {
   return res.json({
     success: true,
-    message: 'Users retrieved',
-    data: users,
+    message: 'Contacts retrieved',
+    data: [
+      {
+        title: 'Fire Emergency',
+        contacts: [
+          {
+            phone: '+234 011 022 0333',
+          },
+          {
+            email: 'fireemergency@agency.oauife.edu.ng',
+          },
+          {
+            location: 'Beside Banking Area, Road 1, Oau Campus.',
+          },
+        ],
+      },
+      {
+        title: 'Security Emergency',
+        contacts: [
+          {
+            phone: '+234 011 022 0333',
+          },
+          {
+            email: 'securityemergency@agency.oauife.edu.ng',
+          },
+          {
+            location: 'DSA, Oau Campus.',
+          },
+        ],
+      },
+      {
+        title: 'Medical Emergency',
+        contacts: [
+          {
+            phone: '+234 011 022 0333',
+          },
+          {
+            email: 'medicalemergency@agency.oauife.edu.ng',
+          },
+          {
+            location: 'Beside Awo Hall of Residence, Hostel Area, OAU Campus.',
+          },
+        ],
+      },
+    ],
   });
 };
 
@@ -55,14 +93,7 @@ const getSomeUsers = async (req, res) => {
 // ⚡️ @Route -> api/user/:id (GET)
 // ⚡️ @Access -> Private
 const getUser = async (req, res) => {
-  const { id } = req.params;
-
-  if (!id)
-    return res
-      .status(400)
-      .json({ success: false, message: 'Account ID required' });
-
-  const user = await User.findOne({ _id: id }).select('-password').lean();
+  const user = await User.findById(req.user.id).select('-password').lean();
   if (!user)
     return res.status(400).json({
       success: false,
@@ -171,91 +202,12 @@ const getRecommendedUsers = async (req, res) => {
 // ⚡️ @Route -> api/update-user (PATCH)
 // ⚡️ @Access -> Private
 const updateUser = async (req, res) => {
-  const {
-    id,
-    email: userEmail,
-    firstname,
-    lastname,
-    password,
-    dateOfBirth,
-    gender,
-    bio,
-    phoneNumber,
-    website,
-    location,
-    socialLinks,
-    postVisibility,
-    profileVisibility,
-    canBefollowed,
-  } = req.body;
+  const { firstName, lastName, displayName } = req.body;
 
-  const email = normalizeEmail(userEmail);
+  if (!firstName && !lastName && !displayName)
+    return res.status(400).json({ success: false, message: 'No data passed' });
 
-  // <== VALIDATE USER ENTRIES ==>
-  const isInvalid = [id, email, firstname, lastname, dateOfBirth, gender].some(
-    (entry) => !entry,
-  );
-
-  if (isInvalid)
-    return res
-      .status(400)
-      .json({ success: false, message: 'All fields are required' });
-
-  if (!isEmail(email))
-    return res
-      .status(400)
-      .json({ success: false, message: 'Invalid email address' });
-
-  if (!isDate(dateOfBirth))
-    return res.status(400).json({
-      success: false,
-      message: 'Invalid date of birth',
-    });
-
-  if (password && password.length < 8) {
-    return res.status(400).json({
-      success: false,
-      message: 'Password must be at least 8 characters',
-    });
-  }
-
-  if (
-    phoneNumber &&
-    !/^\s*(?:\+?(\d{1,3}))?[-. (]*(\d{3})[-. )]*(\d{3})[-. ]*(\d{4})(?: *x(\d+))?\s*$/i.test(
-      phoneNumber,
-    )
-  )
-    return res
-      .status(400)
-      .json({ success: false, message: 'Invalid phone number' });
-
-  if (gender !== 'Male' && gender !== 'Female')
-    return res
-      .status(400)
-      .json({ success: false, message: 'Invalid gender provided' });
-
-  if (
-    typeof canBefollowed !== 'undefined' &&
-    typeof canBefollowed !== 'boolean'
-  )
-    return res
-      .status(400)
-      .json({ success: false, message: "Invalid value for 'canBeFollowed'" });
-
-  const visibilityOptions = ['everyone', 'followers', 'me'];
-  if (postVisibility && !visibilityOptions.includes(postVisibility)) {
-    return res
-      .status(400)
-      .json({ success: false, message: 'Invalid visibility option provided' });
-  }
-
-  if (profileVisibility && !visibilityOptions.includes(profileVisibility)) {
-    return res
-      .status(400)
-      .json({ success: false, message: 'Invalid visibility option provided' });
-  }
-
-  const user = await User.findById(id).exec();
+  const user = await User.findById(req.user.id).exec();
   if (!user)
     return res
       .status(400)
@@ -266,50 +218,18 @@ const updateUser = async (req, res) => {
       .status(400)
       .json({ success: false, message: 'User is not verified' });
 
-  if (email !== user.email) {
-    const duplicate = await User.findOne({
-      email,
-    })
-      .lean()
-      .exec();
-
-    if (duplicate && duplicate._id !== id)
-      return res
-        .status(400)
-        .json({ success: false, message: 'Email already taken' });
-
-    user.email = email; // Verify Email
-  }
-
-  user.gender = gender;
-  user.lastname = lastname;
-  user.firstname = firstname;
-  user.dateOfBirth = dateOfBirth;
-  if (bio) user.bio = bio;
-  if (website) user.website = website;
-  if (location) user.location = location;
-  if (phoneNumber) user.phoneNumber = phoneNumber;
-  if (postVisibility) user.postVisibility = postVisibility;
-  if (profileVisibility) user.profileVisibility = profileVisibility;
-  if (typeof canBefollowed === 'boolean') user.canBefollowed = canBefollowed;
-  if (password) user.password = await hash(password, 10);
-  if (socialLinks) {
-    if (socialLinks.facebook) user.socialLinks.facebook = socialLinks.facebook;
-    if (socialLinks.twitter) user.socialLinks.twitter = socialLinks.twitter;
-    if (socialLinks.instagram)
-      user.socialLinks.instagram = socialLinks.instagram;
-    if (socialLinks.linkedin) user.socialLinks.linkedin = socialLinks.linkedin;
-  }
+  if (lastName) user.lastName = lastName;
+  if (firstName) user.firstName = firstName;
+  if (displayName) user.displayName = displayName;
 
   const updatedUser = await User.findByIdAndUpdate(
     {
-      _id: id,
+      _id: req.user.id,
     },
     user,
     { new: true },
   );
 
-  await user.save();
   res.json({
     success: true,
     message: `User updated successfully`,
@@ -572,7 +492,7 @@ const unfollowUser = async (req, res) => {
 };
 
 module.exports = {
-  getAllUsers,
+  getContact,
   getFollowers,
   getFollowing,
   getRecommendedUsers,

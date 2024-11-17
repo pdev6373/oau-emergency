@@ -25,6 +25,20 @@ const options = {
         url: 'https://spdx.org/licenses/MIT.html',
       },
     },
+    components: {
+      securitySchemes: {
+        bearerAuth: {
+          type: 'http',
+          scheme: 'bearer',
+          bearerFormat: 'JWT',
+        },
+      },
+    },
+    security: [
+      {
+        bearerAuth: [],
+      },
+    ],
     servers: [
       {
         url: 'https://oau-emergency.onrender.com',

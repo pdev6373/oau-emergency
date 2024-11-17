@@ -10,7 +10,7 @@ const AuthRoutes = () => {
    * /api/v1/auth/register:
    *   post:
    *     summary: Register a new user
-   *     tags: [Authentication]
+   *     tags: [User Authentication]
    *     description: Register a new user account and send verification email
    *     requestBody:
    *       required: true
@@ -39,14 +39,6 @@ const AuthRoutes = () => {
    *                 format: password
    *                 minLength: 8
    *                 description: User's password (min 8 characters)
-   *               dateOfBirth:
-   *                 type: string
-   *                 format: date
-   *                 description: User's date of birth (optional)
-   *               gender:
-   *                 type: string
-   *                 enum: [Male, Female]
-   *                 description: User's gender (optional)
    *     responses:
    *       200:
    *         description: Registration successful, verification email sent
@@ -95,7 +87,7 @@ const AuthRoutes = () => {
    * /api/v1/auth/verify:
    *   post:
    *     summary: Verify user email with OTP
-   *     tags: [Authentication]
+   *     tags: [User Authentication]
    *     description: Verify user's email address using the OTP sent during registration
    *     requestBody:
    *       required: true
@@ -162,7 +154,7 @@ const AuthRoutes = () => {
    * /api/v1/auth/forgot-password:
    *   post:
    *     summary: Request password reset OTP
-   *     tags: [Authentication]
+   *     tags: [User Authentication]
    *     description: Send OTP to user's email for password reset verification
    *     requestBody:
    *       required: true
@@ -238,7 +230,7 @@ const AuthRoutes = () => {
    * /api/v1/auth/new-password:
    *   patch:
    *     summary: Set new password using OTP
-   *     tags: [Authentication]
+   *     tags: [User Authentication]
    *     description: Reset user's password after verifying OTP sent to email
    *     requestBody:
    *       required: true
@@ -311,7 +303,7 @@ const AuthRoutes = () => {
    * /api/v1/auth/login:
    *   post:
    *     summary: User login
-   *     tags: [Authentication]
+   *     tags: [User Authentication]
    *     description: Authenticate a user using their email and password.
    *     requestBody:
    *       required: true
@@ -399,7 +391,7 @@ const AuthRoutes = () => {
    * /api/v1/auth/refresh:
    *   post:
    *     summary: Refresh access token
-   *     tags: [Authentication]
+   *     tags: [User Authentication]
    *     description: Generate a new access token using a valid refresh token.
    *     requestBody:
    *       required: true
