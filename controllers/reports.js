@@ -1,5 +1,5 @@
-const isDate = require('validator/lib/isDate');
 const Report = require('../models/Report');
+const isDate = require('validator/lib/isDate');
 
 const getAllReports = async (req, res) => {
   const reports = await Report.find();

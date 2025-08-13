@@ -1,16 +1,16 @@
 require('dotenv').config();
 require('express-async-errors');
-const express = require('express');
-const cookieParser = require('cookie-parser');
 const cors = require('cors');
-const mongoose = require('mongoose');
-const connectDB = require('./config/dbConnection');
-const getRoutes = require('./routes');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const express = require('express');
+const mongoose = require('mongoose');
+const getRoutes = require('./routes');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const swaggerJsdoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
+const connectDB = require('./config/dbConnection');
 
 const options = {
   definition: {
@@ -66,7 +66,7 @@ app.use(helmet());
 app.use(morgan('common'));
 app.use('/api/v1', getRoutes());
 
-app.all('*', (req, res) => {
+app.all('*', (_, res) => {
   res.status(404).json({ success: false, message: 'Route not available' });
 });
 

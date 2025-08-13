@@ -1,8 +1,5 @@
-const { hash, compare } = require('bcryptjs');
-const isEmail = require('validator/lib/isEmail');
-const isDate = require('validator/lib/isDate');
-const normalizeEmail = require('validator/lib/normalizeEmail');
 const User = require('../models/User');
+const { hash, compare } = require('bcryptjs');
 
 const getContact = async (req, res) => {
   return res.json({

@@ -1,8 +1,8 @@
+const { compare } = require('bcryptjs');
+const Admin = require('../models/Admin');
 const isEmail = require('validator/lib/isEmail');
 const { sign, verify } = require('jsonwebtoken');
-const { compare, hash, hashSync } = require('bcryptjs');
 const normalizeEmail = require('validator/lib/normalizeEmail');
-const Admin = require('../models/Admin');
 
 // ⚡️ @Description -> Login admin
 // ⚡️ @Route -> api/admin/auth/login (POST)
@@ -44,13 +44,13 @@ const login = async (req, res) => {
     {
       Info: { email: admin.email, type: 'admin', id: admin._id },
     },
-    'rWUAUFHXXmIhNICO6Zlre1mHXn8XivgAOTW6e4BXOLD8sJRSKAISfQ7de8MZE6y12A8ainDlfu3RbuSvBZZhRVWNpZOYdZ/zxd9u115GykkrCQ8eaZuyrMpaL4EUTMQzXyx5TagDvYoQugatuXcLELbAztkXcoo8kmKdl5jGt9QMeG99jT2r742YONzVzGttPbTN5HUFf2yciXBqmD1c+UPbxsskx+XfYhP++jPqYgo5XepJegidrYMZC+owb7blJr110y7G/lDQqljZlGJ0WsMaxu1h5q62aozYFY0B6ta+C7neSn6ru2F7VayN/TMENBcrNRCXq7DR5uEpfasvig==',
+    process.env.ACCESS_TOKEN_SECRET,
     { expiresIn: '15m' },
   );
 
   const refreshToken = sign(
     { email: admin.email, type: 'admin', id: admin._id },
-    'lT6QfEjns9UuevUFcWvhPohhN4T2Sq6Am2jEqoMgfUS9FAYWoQfpq99cVxd4iQxCnJO3U0JlJ64m+6g9aqC+i8TLmPRx8uMiJYaoQVi//gsFLg8tL5zxrE/pI2rC8it+92BJFvAFNG8U54eHyhkVNtJH7/wY0kThyMDEh3KlyjlHPslHtpkN8ntGzRmG5Fo07v4Z5fDQ1JevE+nw7Qz3buLqjjN35KaGVq4tlKFA3r/WamjtT0LmtLfLCeWAVHdrYz8ECKC3ArgUjGZFQGUu1mtAb3ohT7iOXF2IMecJOj55EVRhKGtMRuyaKo+t4Ysoy31Rt8htFLyLXAW/SvaESA==',
+    process.env.REFRESH_TOKEN_SECRET,
     { expiresIn: '7d' },
   );
 
@@ -70,7 +70,7 @@ const refresh = async (req, res) => {
 
   verify(
     refreshToken,
-    'lT6QfEjns9UuevUFcWvhPohhN4T2Sq6Am2jEqoMgfUS9FAYWoQfpq99cVxd4iQxCnJO3U0JlJ64m+6g9aqC+i8TLmPRx8uMiJYaoQVi//gsFLg8tL5zxrE/pI2rC8it+92BJFvAFNG8U54eHyhkVNtJH7/wY0kThyMDEh3KlyjlHPslHtpkN8ntGzRmG5Fo07v4Z5fDQ1JevE+nw7Qz3buLqjjN35KaGVq4tlKFA3r/WamjtT0LmtLfLCeWAVHdrYz8ECKC3ArgUjGZFQGUu1mtAb3ohT7iOXF2IMecJOj55EVRhKGtMRuyaKo+t4Ysoy31Rt8htFLyLXAW/SvaESA==',
+    process.env.REFRESH_TOKEN_SECRET,
     async (err, decoded) => {
       if (err)
         return res.status(403).send({ success: false, message: 'Forbidden' });
@@ -91,7 +91,7 @@ const refresh = async (req, res) => {
         {
           Info: { email: admin.email, type: 'admin', id: admin._id },
         },
-        'rWUAUFHXXmIhNICO6Zlre1mHXn8XivgAOTW6e4BXOLD8sJRSKAISfQ7de8MZE6y12A8ainDlfu3RbuSvBZZhRVWNpZOYdZ/zxd9u115GykkrCQ8eaZuyrMpaL4EUTMQzXyx5TagDvYoQugatuXcLELbAztkXcoo8kmKdl5jGt9QMeG99jT2r742YONzVzGttPbTN5HUFf2yciXBqmD1c+UPbxsskx+XfYhP++jPqYgo5XepJegidrYMZC+owb7blJr110y7G/lDQqljZlGJ0WsMaxu1h5q62aozYFY0B6ta+C7neSn6ru2F7VayN/TMENBcrNRCXq7DR5uEpfasvig==',
+        process.env.ACCESS_TOKEN_SECRET,
         { expiresIn: '15m' },
       );
 
