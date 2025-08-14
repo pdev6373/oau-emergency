@@ -214,13 +214,13 @@ const login = async (req, res) => {
       Info: { email: user.email, type: 'user', id: user._id },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: '15m' },
+    { expiresIn: '1d' },
   );
 
   const refreshToken = sign(
     { email: user.email, type: 'user', id: user._id },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '7d' },
+    { expiresIn: '30d' },
   );
 
   user.password = undefined;
@@ -264,7 +264,7 @@ const refresh = async (req, res) => {
           Info: { email: user.email, typr: 'user', id: user._id },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '15m' },
+        { expiresIn: '1d' },
       );
 
       res.json({

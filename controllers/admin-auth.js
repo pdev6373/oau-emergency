@@ -45,13 +45,13 @@ const login = async (req, res) => {
       Info: { email: admin.email, type: 'admin', id: admin._id },
     },
     process.env.ACCESS_TOKEN_SECRET,
-    { expiresIn: '15m' },
+    { expiresIn: '1d' },
   );
 
   const refreshToken = sign(
     { email: admin.email, type: 'admin', id: admin._id },
     process.env.REFRESH_TOKEN_SECRET,
-    { expiresIn: '7d' },
+    { expiresIn: '30d' },
   );
 
   admin.password = undefined;
@@ -92,7 +92,7 @@ const refresh = async (req, res) => {
           Info: { email: admin.email, type: 'admin', id: admin._id },
         },
         process.env.ACCESS_TOKEN_SECRET,
-        { expiresIn: '15m' },
+        { expiresIn: '1d' },
       );
 
       res.json({
