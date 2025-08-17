@@ -38,7 +38,7 @@ const acknowledgeReport = async (req, res) => {
 };
 
 const createReport = async (req, res) => {
-  const { location, date, details } = req.body;
+  const { location, date, details, image, video } = req.body;
 
   if (!isDate(date))
     return res.status(400).json({
@@ -51,6 +51,8 @@ const createReport = async (req, res) => {
     date,
     details,
     userId: req.user.id,
+    video,
+    image,
   });
 
   return res.json({

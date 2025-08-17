@@ -5,6 +5,12 @@ const reportSchema = new Schema(
     location: {
       type: String,
     },
+    image: {
+      type: String,
+    },
+    video: {
+      type: String,
+    },
     date: {
       type: Date,
     },

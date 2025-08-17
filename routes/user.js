@@ -118,6 +118,14 @@ const UserRoutes = () => {
    *                 type: string
    *                 description: Description of the incident.
    *                 example: A fire outbreak occurred near the main gate.
+   *               image:
+   *                 type: string
+   *                 description: Optional image URL of the incident.
+   *                 example: https://res.cloudinary.com/demo/image/upload/sample.jpg
+   *               video:
+   *                 type: string
+   *                 description: Optional video URL of the incident.
+   *                 example: https://res.cloudinary.com/demo/video/upload/sample.mp4
    *     responses:
    *       200:
    *         description: Report successfully created

@@ -1,5 +1,5 @@
-const cloudinary = require("cloudinary").v2;
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -7,12 +7,22 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET,
 });
 
-const storage = new CloudinaryStorage({
+const imageStorage = new CloudinaryStorage({
   cloudinary,
   params: {
-    folder: "Images",
-    allowedFormats: ["jpeg", "png", "jpg"],
+    folder: 'Images',
+    allowedFormats: ['jpeg', 'png', 'jpg'],
+    resource_type: 'image',
   },
 });
 
-module.exports = { storage, cloudinary };
+const videoStorage = new CloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'Videos',
+    allowedFormats: ['mp4', 'mov', 'avi', 'mkv'],
+    resource_type: 'video',
+  },
+});
+
+module.exports = { imageStorage, videoStorage, cloudinary };
